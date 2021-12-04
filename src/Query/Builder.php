@@ -211,6 +211,7 @@ class Builder extends BaseBuilder
      */
     public function getFresh($columns = [], $returnLazy = false)
     {
+        //test
         // If no columns have been specified for the select statement, we will set them
         // here to either the passed columns, or the standard default of retrieving
         // all of the columns on the table using the "wildcard" column character.
