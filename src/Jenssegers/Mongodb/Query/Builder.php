@@ -391,28 +391,54 @@ class Builder extends BaseBuilder
             // Fix for legacy support, converts the results to arrays instead of objects.
             $options['typeMap'] = ['root' => 'array', 'document' => 'array'];
 
-            //Test
-
             // Add custom query options
             if (count($this->options)) {
                 $options = array_merge($options, $this->options);
             }
 
-            // Execute query and get MongoCursor
-            $cursor = $this->collection->find($wheres, $options);
-
-            if ($returnLazy) {
-                return LazyCollection::make(function () use ($cursor) {
-                    foreach ($cursor as $item) {
-                        yield $item;
-                    }
-                });
+            /*$key = [
+                'connection' => $this->collection->getDatabaseName(),
+                'collection' => $this->collection->getCollectionName(),
+                'wheres' => $this->wheres,
+                'columns' => $this->columns,
+                'groups' => $this->groups,
+                'orders' => $this->orders,
+                'offset' => $this->offset,
+                'limit' => $this->limit,
+                'aggregate' => $this->aggregate,
+            ];*/
+            $cacheKey = $this->generateCacheKey();
+            $tags = getEmpCacheTags(['select']);
+            if(config('app.env') != 'production'){
+                if(\Cache::tags($tags)->has($cacheKey)){
+                    return \Cache::tags($tags)->get($cacheKey);
+                }
             }
 
-            // Return results as an array with numeric keys
-            $results = iterator_to_array($cursor, false);
+            try {
+                // Execute query and get MongoCursor
+                $cursor = $this->collection->find($wheres, $options);
 
-            return new Collection($results);
+                if ($returnLazy) {
+                    return LazyCollection::make(function () use ($cursor) {
+                        foreach ($cursor as $item) {
+                            yield $item;
+                        }
+                    });
+                }
+
+                // Return results as an array with numeric keys
+                $results = iterator_to_array($cursor, false);
+            }catch (\Exception $e){
+                //dd('aaaa '.$e->getMessage());
+            }
+
+            $results = new Collection($results);
+            if(config('app.env') != 'production'){
+                \Cache::tags($tags)->put($cacheKey, $results, 1);
+            }
+
+            return $results;
         }
     }
 
