@@ -391,6 +391,8 @@ class Builder extends BaseBuilder
             // Fix for legacy support, converts the results to arrays instead of objects.
             $options['typeMap'] = ['root' => 'array', 'document' => 'array'];
 
+            //Test
+
             // Add custom query options
             if (count($this->options)) {
                 $options = array_merge($options, $this->options);
