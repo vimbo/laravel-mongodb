@@ -451,7 +451,7 @@ class Builder extends BaseBuilder
         $key = [
             'connection' => $this->collection->getDatabaseName(),
             'collection' => $this->collection->getCollectionName(),
-            'wheres' => $this->wheres,
+            'wheres' => json_encode($this->wheres),
             'columns' => $this->columns,
             'groups' => $this->groups,
             'orders' => $this->orders,
