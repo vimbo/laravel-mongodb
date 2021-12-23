@@ -409,7 +409,7 @@ class Builder extends BaseBuilder
             ];*/
             $cacheKey = $this->generateCacheKey();
             $tags = getEmpCacheTags(['select']);
-            if(config('app.env') != 'production' && \Cache::tags($tags)->has($cacheKey)){
+            if(/*config('app.env') != 'production' &&*/ \Cache::tags($tags)->has($cacheKey)){
                 $cacheObj = \Cache::tags($tags)->get($cacheKey);
                 if($cacheObj){
                     return $cacheObj;
@@ -435,9 +435,9 @@ class Builder extends BaseBuilder
             }
 
             $results = new Collection($results);
-            if(config('app.env') != 'production'){
+            //if(config('app.env') != 'production'){
                 \Cache::tags($tags)->put($cacheKey, $results, 1);
-            }
+            //}
 
             return $results;
         }
