@@ -409,8 +409,7 @@ class Builder extends BaseBuilder
             ];*/
             $cacheKey = $this->generateCacheKey();
             $tags = getEmpCacheTags(['select']);
-            if(/*config('app.env') != 'production' &&*/ \Cache::tags($tags)->has($cacheKey)){
-                $cacheObj = \Cache::tags($tags)->get($cacheKey);
+            if(/*config('app.env') != 'production' &&*/ $cacheObj = \Cache::tags($tags)->get($cacheKey)){
                 if($cacheObj){
                     return $cacheObj;
                 }
