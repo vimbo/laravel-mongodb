@@ -407,11 +407,20 @@ class Builder extends BaseBuilder
                 'limit' => $this->limit,
                 'aggregate' => $this->aggregate,
             ];*/
+
+            $pathExploded = explode('/', request()->path());
+            $shouldIgnoreCache = [
+                'salvar',
+                'alterar'
+            ];
             $cacheKey = $this->generateCacheKey();
             $tags = getEmpCacheTags(['select']);
-            if(/*config('app.env') != 'production' &&*/ $cacheObj = \Cache::tags($tags)->get($cacheKey)){
-                if($cacheObj){
-                    return $cacheObj;
+
+            if(!in_array(end($pathExploded), $shouldIgnoreCache)){
+                if(/*config('app.env') != 'production' &&*/ $cacheObj = \Cache::tags($tags)->get($cacheKey)){
+                    if($cacheObj){
+                        return $cacheObj;
+                    }
                 }
             }
 
