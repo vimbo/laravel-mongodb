@@ -416,7 +416,7 @@ class Builder extends BaseBuilder
             $cacheKey = $this->generateCacheKey();
             $tags = getEmpCacheTags(['select']);
 
-            if(!in_array(end($pathExploded), $shouldIgnoreCache)){
+            if(!in_array(end($pathExploded), $shouldIgnoreCache) && !session()->get('ignore_query_cache')){
                 if(/*config('app.env') != 'production' &&*/ $cacheObj = \Cache::tags($tags)->get($cacheKey)){
                     if($cacheObj){
                         return $cacheObj;
@@ -439,6 +439,8 @@ class Builder extends BaseBuilder
                 // Return results as an array with numeric keys
                 $results = iterator_to_array($cursor, false);
             }catch (\Exception $e){
+                report($e);
+                throw new \Exception('Houve um erro na conexão com o Banco de Dados, por favor, tente novamente.');
                 //dd('aaaa '.$e->getMessage());
             }
 
