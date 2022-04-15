@@ -416,12 +416,16 @@ class Builder extends BaseBuilder
             $cacheKey = $this->generateCacheKey();
             $tags = getEmpCacheTags(['select']);
 
-            if(!in_array(end($pathExploded), $shouldIgnoreCache) && !session()->get('ignore_query_cache')){
-                if(/*config('app.env') != 'production' &&*/ $cacheObj = \Cache::tags($tags)->get($cacheKey)){
-                    if($cacheObj){
-                        return $cacheObj;
+            try{
+                if(!in_array(end($pathExploded), $shouldIgnoreCache) && !session()->get('ignore_query_cache')){
+                    if(/*config('app.env') != 'production' &&*/ $cacheObj = \Cache::tags($tags)->get($cacheKey)){
+                        if($cacheObj){
+                            return $cacheObj;
+                        }
                     }
                 }
+            }catch(\Exception $e){
+                //Do nothing
             }
 
             try {
